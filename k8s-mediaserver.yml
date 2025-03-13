@@ -2,12 +2,12 @@
 apiVersion: charts.kubealex.com/v1
 kind: K8SMediaserver
 metadata:
-  name: k8smediaserver-sample
+  name: k8smediaserver
 spec:
   # Default values copied from <project_dir>/helm-charts/k8s-mediaserver/values.yaml
   general:
-    ingress_host: k8s-mediaserver.k8s.test
-    plex_ingress_host: k8s-plex.k8s.test
+    ingress_host: server.media.lan
+    plex_ingress_host: plex.media.lan
     image_tag: latest
     podDistribution: cluster # can be "spread" or "cluster"
     #UID to run the process with
@@ -18,9 +18,9 @@ spec:
     storage:
       customVolume: false #set to true if not using a PVC (must provide volume below)
       accessMode: ""
-      pvcName: mediaserver-pvc
-      size: 5Gi
-      pvcStorageClass: ""
+      pvcName: media-pvc
+      size: 500Gi
+      pvcStorageClass: "local-path"
       # the path starting from the top level of the pv you're passing. If your share is server.local/share/, then tv is server.local/share/media/tv
       subPaths:
         tv: media/tv
@@ -250,7 +250,7 @@ spec:
 
   plex:
     enabled: true
-    claim: "CHANGEME"
+    claim: media-pvc
     replicaCount: 1
     container:
       image: docker.io/linuxserver/plex
